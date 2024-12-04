@@ -1,117 +1,172 @@
-import { useEffect } from "react";
-import { useRouter } from "next/router";
-import Image from "next/image";
-import { useAuth } from "./authContext";
+"use client";
 
-export default function Home() {
-    const { isAuthenticated } = useAuth();
-    const router = useRouter();
+import { useState } from "react";
+import { useRouter } from "next/navigation"; // Verwenden von `next/navigation` für die Navigation
 
-    useEffect(() => {
-        if (!isAuthenticated) {
-            router.push("/login");
+export default function LandingPage() {
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState("register");
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL; // API URL aus Umgebungsvariable
+    const endpoint =
+      activeTab === "login" ? `${apiUrl}/login` : `${apiUrl}/register`;
+
+    const data = {
+      ...formData,
+      identifier:
+        activeTab === "login" ? formData.username || formData.email : undefined,
+    };
+
+    setErrorMessage(null); // Zurücksetzen der Fehlernachricht
+    setSuccessMessage(null); // Zurücksetzen der Erfolgsnachricht
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setSuccessMessage("Erfolgreich angemeldet! Weiterleitung...");
+        // Wenn Login erfolgreich ist, weiterleiten zur Home-Seite
+        if (activeTab === "login") {
+          router.push("/home"); // Weiterleitung zur Home-Seite nach Login
         }
-    }, [isAuthenticated, router]);
-
-    if (!isAuthenticated) {
-        return null; // or a loading spinner
+      } else {
+        const error = await response.json();
+        setErrorMessage(error.message || "Ein Fehler ist aufgetreten");
+      }
+    } catch (err) {
+      console.error("Error submitting form:", err);
+      setErrorMessage(
+        "Ein Fehler ist aufgetreten. Bitte versuche es später erneut."
+      );
     }
+  };
 
-    return (
-        <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-            <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-                <Image
-                    className="dark:invert"
-                    src="/next.svg"
-                    alt="Next.js logo"
-                    width={180}
-                    height={38}
-                    priority
-                />
-                <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-                    <li className="mb-2">
-                        Get started by editing{" "}
-                        <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-                            app/page.tsx
-                        </code>
-                        .
-                    </li>
-                    <li>Save and see your changes instantly.</li>
-                </ol>
-
-                <div className="flex gap-4 items-center flex-col sm:flex-row">
-                    <a
-                        className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-                        href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <Image
-                            className="dark:invert"
-                            src="/vercel.svg"
-                            alt="Vercel logomark"
-                            width={20}
-                            height={20}
-                        />
-                        Deploy now
-                    </a>
-                    <a
-                        className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-                        href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Read our docs
-                    </a>
-                </div>
-            </main>
-            <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-                <a
-                    className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-                    href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <Image
-                        aria-hidden
-                        src="/file.svg"
-                        alt="File icon"
-                        width={16}
-                        height={16}
-                    />
-                    Learn
-                </a>
-                <a
-                    className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-                    href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <Image
-                        aria-hidden
-                        src="/window.svg"
-                        alt="Window icon"
-                        width={16}
-                        height={16}
-                    />
-                    Examples
-                </a>
-                <a
-                    className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-                    href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <Image
-                        aria-hidden
-                        src="/globe.svg"
-                        alt="Globe icon"
-                        width={16}
-                        height={16}
-                    />
-                    Go to nextjs.org →
-                </a>
-            </footer>
+  return (
+    <div className="flex justify-center items-center min-h-screen bg-blue-100">
+      <div className="bg-white p-8 rounded-lg shadow-md w-96">
+        {/* Tab Switcher */}
+        <div className="flex justify-between mb-4">
+          <button
+            onClick={() => setActiveTab("login")}
+            className={`text-lg font-semibold py-2 px-4 rounded-tl-lg ${
+              activeTab === "login" ? "bg-blue-500 text-white" : "bg-gray-200"
+            }`}
+          >
+            Login
+          </button>
+          <button
+            onClick={() => setActiveTab("register")}
+            className={`text-lg font-semibold py-2 px-4 rounded-tr-lg ${
+              activeTab === "register"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-200"
+            }`}
+          >
+            Signup
+          </button>
         </div>
-    );
+
+        {/* Error and Success Messages */}
+        {errorMessage && (
+          <div className="mb-4 text-red-500">
+            <p>{errorMessage}</p>
+          </div>
+        )}
+        {successMessage && (
+          <div className="mb-4 text-green-500">
+            <p>{successMessage}</p>
+          </div>
+        )}
+
+        {/* Login Form */}
+        {activeTab === "login" && (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              placeholder="Username or Email"
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Password"
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+            <button
+              type="submit"
+              className="w-full p-2 bg-blue-500 text-white rounded"
+            >
+              Login
+            </button>
+          </form>
+        )}
+
+        {/* Register Form */}
+        {activeTab === "register" && (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              placeholder="Username"
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Email Address"
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Password"
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+            <button
+              type="submit"
+              className="w-full p-2 bg-blue-500 text-white rounded"
+            >
+              Signup
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
+  );
 }
