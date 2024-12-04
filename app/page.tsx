@@ -32,11 +32,11 @@ export default function LandingPage() {
             activeTab === "login" ? `${apiUrl}/login` : `${apiUrl}/register`;
 
         const data = {
-            ...formData,
             identifier:
                 activeTab === "login"
                     ? formData.username || formData.email
                     : undefined,
+            password: formData.password,
         };
 
         setErrorMessage(null);
