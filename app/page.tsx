@@ -1,7 +1,7 @@
-"use client";
-
-import { useState } from "react";
-import { useRouter } from "next/navigation"; // Verwenden von `next/navigation` für die Navigation
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import Image from "next/image";
+import { useAuth } from "./authContext";
 
 export default function LandingPage() {
   const router = useRouter();
@@ -170,3 +170,4 @@ export default function LandingPage() {
     </div>
   );
 }
+
