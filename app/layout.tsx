@@ -1,8 +1,36 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
+import React from "react";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./authContext";
 
+<<<<<<< HEAD
+const inter = Inter({ subsets: ["latin"] });
+
+export const metadata = {
+  title: "SNP Manager",
+  description: "Manage your passwords securely",
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body className={inter.className}>
+        <header className="header">
+          <nav className="navbar">
+            <a href="/">Home</a>
+            <a href="/auth/login">Login</a>
+            <a href="/auth/register">Register</a>
+          </nav>
+        </header>
+        <div className="main-content">{children}</div>
+      </body>
+    </html>
+  );
+=======
 const geistSans = localFont({
     src: "./fonts/GeistVF.woff",
     variable: "--font-geist-sans",
@@ -33,4 +61,5 @@ export default function RootLayout({
             </body>
         </html>
     );
+>>>>>>> 5d17fdde6ce75fe68e564e555f4daf75ce770e75
 }
