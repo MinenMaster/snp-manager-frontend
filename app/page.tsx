@@ -27,7 +27,7 @@ export default function LandingPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        const apiUrl = "http://snp-api.vercel.app";
+        const apiUrl = "https://snp-api.vercel.app";
         const endpoint =
             activeTab === "login" ? `${apiUrl}/login` : `${apiUrl}/register`;
 
