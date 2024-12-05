@@ -20,7 +20,7 @@ export default function LoginPage() {
       if (token) {
         try {
           const response = await fetch(
-            "https://snp-api.vercel.app/api/tools/authenticateJWT",
+            "https://snp-api.vercel.app/auth",
             {
               method: "GET",
               headers: {
