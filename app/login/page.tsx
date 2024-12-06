@@ -31,7 +31,7 @@ export default function LoginPage() {
           );
 
           if (response.status === 200) {
-            router.push("/home");
+            router.push("/");
           } else {
             localStorage.removeItem("authToken");
           }
