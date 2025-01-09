@@ -27,7 +27,7 @@ Additionally, ensure you have the backend for the SNP-Manager running. You can f
 
 ## Installation
 
-> **Note**: The connection to the backend is currently hard-coded to our backend. In the finished product, a self-hosted backend will be needed.
+> **Note**: The connection to the backend is currently hard-coded to [our backend](https://github.com/MinenMaster/snp-manager-backend). In the finished product, a self-hosted backend will be needed.
 
 Clone the repository to your local machine:
 
