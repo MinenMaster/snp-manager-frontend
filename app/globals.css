@@ -46,6 +46,21 @@ main {
     padding: 2rem;
 }
 
+button {
+    padding: 0 6px;
+    margin-right: 4px;
+    border: #0060ff 1px solid;
+    border-radius: 8px;
+    background-color: white;
+    color: black;
+    transition: 0.2s;
+}
+
+button:hover {
+    background-color: #0060ff;
+    color: white;
+}
+
 .container {
     display: flex;
     flex-direction: column;
